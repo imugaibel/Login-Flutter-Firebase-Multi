@@ -1,5 +1,5 @@
 # login
-Flutter Firebase Mulri User
+Flutter Firebase Multi User
 M.S login flutter firebase.
 
 ## Getting Started
