@@ -1,7 +1,7 @@
 name: login
 description: M.S login flutter firebase.
 version: 0.0.1
-homepage: https://github.com/MeshariS
+homepage: https://github.com/MesharSuliman
 
 environment:
   sdk: ">=2.15.1 <3.0.0"

@@ -1,31 +1,32 @@
 import 'dart:convert';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
-
-
 import 'Home/forgot_password.dart';
 import 'Home/notifications.dart';
 import 'Home/signin.dart';
 import 'Home/signup.dart';
 import 'Home/splash.dart';
 import 'Home/tabbar.dart';
-import 'Home/wrapper.dart';
 import '/init.dart'
 if (dart.library.html) 'web_init.dart'
 if (dart.library.io) 'io_init.dart';
 
 
 
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase();
-  runApp(MyApp());
+  await Firebase.initializeApp().then((_) {
+    FirebaseFirestore.instance.settings =
+    const Settings(persistenceEnabled: false);
+  });
+  runApp(const MyApp());
 }
 
 
@@ -144,8 +145,6 @@ class _MyAppState extends State<MyApp> {
         switch (settings.name) {
           case '/Splash':
             return MaterialPageRoute(builder: (_) =>  const Splash());
-          case '/Wrapper':
-            return MaterialPageRoute(builder: (_) =>  const Wrapper());
           case '/SignIn':
             return MaterialPageRoute(builder: (_) =>  SignIn(message: arguments,));
           case '/SignUp':

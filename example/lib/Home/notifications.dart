@@ -24,7 +24,6 @@ class _NotificationState extends State<Notifications> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
     FirebaseManager.shared.setNotificationRead();
     UserProfile.shared.getLanguage().then((value) {
       setState(() {

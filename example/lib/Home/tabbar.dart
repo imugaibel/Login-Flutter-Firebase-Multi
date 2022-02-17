@@ -6,6 +6,7 @@ import 'package:login_example/user%20page/clientsreport.dart';
 
 
 import '../../main.dart';
+import 'notifications.dart';
 
 
 class TabBarItem {
@@ -44,13 +45,13 @@ class _TabBarPageState extends State<TabBarPage> {
     switch (widget.userType) {
       case UserType.ADMIN:
         tabItems = [];
-        tabItems.add(TabBarItem(Icons.home, "Home",  Alluser()));
+        tabItems.add(TabBarItem(Icons.home, "Home",  Notifications()));
         tabItems.add(TabBarItem(Icons.sticky_note_2_sharp, "Services",  Alluser()));
         tabItems.add(TabBarItem(Icons.supervised_user_circle_sharp, "Users",  Alluser()));
         break;
       case UserType.USER:
         tabItems = [];
-        tabItems.add(TabBarItem(Icons.home, "Home",  uservendor()));
+        tabItems.add(TabBarItem(Icons.home, "Home",  Notifications()));
         tabItems.add(TabBarItem(Icons.sticky_note_2_sharp, "my ticket",  uservendor()));
         tabItems.add(TabBarItem(Icons.person, "Profile",  uservendor()));
     }

@@ -31,22 +31,18 @@ class UserProfile {
   Future<UserModel?> getUser() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      return prefs.get('user') == "" ? null : userModelFromJson(('user'));
-    } catch(e) {
+      return prefs.get('user') == ""
+          ? null
+          : userModelFromJson(prefs.get('user').toString());
+    } catch (e) {
       return null;
     }
   }
 
-
-  setUser({ required UserModel? user }) async {
+  setUser({UserModel? user}) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('user', user == null ? "" : userModelToJson(user));
-    } catch(e) {
-      return null;
-
-    }
+    } catch (e) {}
   }
-
-
 }
