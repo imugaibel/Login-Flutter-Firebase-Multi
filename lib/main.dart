@@ -1,11 +1,34 @@
 import 'dart:convert';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'Home/forgot_password.dart';
+import 'notifications.dart';
+import 'Home/signin.dart';
+import 'Home/signup.dart';
+import 'Home/splash.dart';
+import 'Home/tabbar.dart';
+import '/init.dart'
+if (dart.library.html) 'web_init.dart'
+if (dart.library.io) 'io_init.dart';
+
+
+
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeFirebase();
+  await Firebase.initializeApp().then((_) {
+    FirebaseFirestore.instance.settings =
+    const Settings(persistenceEnabled: false);
+  });
+  runApp(const MyApp());
+}
+
 
 class AppLocalization {
   AppLocalization(this.locale);
@@ -107,7 +130,7 @@ class _MyAppState extends State<MyApp> {
 
         return supportedLocales.first;
       },
-      title: 'MS',
+      title: 'login',
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
         canvasColor: Colors.white,
@@ -116,6 +139,26 @@ class _MyAppState extends State<MyApp> {
         platform: TargetPlatform.android,
         fontFamily: 'NeoSansArabic', colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.black,),
       ),
+      initialRoute: "/Splash",
+      onGenerateRoute: (settings) {
+        final arguments = settings.arguments;
+        switch (settings.name) {
+          case '/Splash':
+            return MaterialPageRoute(builder: (_) =>  const Splash());
+          case '/SignIn':
+            return MaterialPageRoute(builder: (_) =>  SignIn(message: arguments,));
+          case '/SignUp':
+            return MaterialPageRoute(builder: (_) =>  Signup());
+          case '/ForgotPassword':
+            return MaterialPageRoute(builder: (_) => ForgotPassword());
+          case '/TabBarPage':
+            return MaterialPageRoute(builder: (_) => TabBarPage(userType: arguments,));
+          case '/Notification':
+            return MaterialPageRoute(builder: (_) =>  const Notifications());
+          default:
+            return null;
+        }
+      },
     );
   }
 }
