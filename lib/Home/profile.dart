@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../M.S.dart';
-import '../assets.dart';
+import '../lang.dart';
 import '../language.dart';
 import '../main.dart';
 import '../notification.dart';
@@ -175,7 +175,7 @@ class _ProfileState extends State<Profile> {
                   ),
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: Text(AppLocalization.of(context)!.trans("Cancel")),
+                    child: Text(AppLocalization.of(context)!.trans("Close")),
                   ),
                 ],
               ),
@@ -196,7 +196,7 @@ class _ProfileState extends State<Profile> {
                   AppLocalization.of(context)!.trans(title),
                   style: TextStyle(
                       color:
-                          isLast ? Colors.red : Theme.of(context).primaryColor,
+                      isLast ? Colors.red : Theme.of(context).primaryColor,
                       fontSize: 18,
                       fontWeight: FontWeight.w500),
                 ),

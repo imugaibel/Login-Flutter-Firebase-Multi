@@ -5,7 +5,7 @@ import 'package:login/extensions.dart';
 
 import 'package:login/M.S.dart';
 
-import '../main.dart';
+import '../lang.dart';
 
 class ForgotPassword extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();

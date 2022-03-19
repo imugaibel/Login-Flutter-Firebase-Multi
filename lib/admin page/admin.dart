@@ -1,7 +1,7 @@
 //alluser
 import 'package:flutter/material.dart';
 
-import '../main.dart';
+import '../lang.dart';
 import '../notification.dart';
 
 

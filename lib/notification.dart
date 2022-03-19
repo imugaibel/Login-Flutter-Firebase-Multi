@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:login/notification-model.dart';
 
 import 'M.S.dart';
+import 'lang.dart';
 
 
 
@@ -24,13 +25,16 @@ class NotificationsWidget extends StatelessWidget {
             }
           }
 
-          return InkWell(
-            onTap: () => Navigator.of(context).pushNamed("/Notification"),
-            child: Padding(
+          return Padding(
               padding: const EdgeInsets.all(10),
               child: Stack(
                 children: [
-                  const Icon(Icons.notifications, size: 32,),
+                  IconButton(
+                      icon: const Icon(Icons.notifications, color: Colors.blue,),
+                      tooltip: AppLocalization.of(context)!.trans(
+                          "Notifications"),
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed("/Notification")),
                   Visibility(
                     visible: items.isNotEmpty,
                     child: Positioned(
@@ -46,8 +50,7 @@ class NotificationsWidget extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
-          );
+            );
         } else {
           return const SizedBox();
         }

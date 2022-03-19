@@ -6,7 +6,7 @@ import 'package:login/loader.dart';
 import 'package:login/M.S.dart';
 import 'package:login/user_profile.dart';
 
-import 'main.dart';
+import 'lang.dart';
 
 
 class Notifications extends StatefulWidget {

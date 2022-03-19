@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,7 +10,7 @@ import 'package:login/extensions.dart';
 import 'package:login/loader.dart';
 import 'package:login/user_profile.dart';
 
-import 'main.dart';
+import 'lang.dart';
 
 
 
@@ -20,10 +18,9 @@ import 'main.dart';
 class FirebaseManager {
 
   static final FirebaseManager shared = FirebaseManager();
-  final notificationRef = FirebaseFirestore.instance.collection('Notification');
-
   final FirebaseAuth auth = FirebaseAuth.instance;
   final userRef = FirebaseFirestore.instance.collection('User');
+  final notificationRef = FirebaseFirestore.instance.collection('Notification');
 
 
   // TODO:- Start User
@@ -35,10 +32,11 @@ class FirebaseManager {
       }).toList();
     });
   }
-
-  Stream<List<UserModel>> getAllUser({required Status accountStatus}) {
+  Stream<List<UserModel>> getUsersBYsearch(
+      {required String Name ,required String fieldType}) {
     return userRef
-        .where("status-account", isEqualTo: accountStatus.index)
+        .where(fieldType,
+        isGreaterThanOrEqualTo: Name, isLessThan: Name + 'z')
         .snapshots()
         .map((QueryDocumentSnapshot) {
       return QueryDocumentSnapshot.docs.map((doc) {
@@ -46,9 +44,7 @@ class FirebaseManager {
       }).toList();
     });
   }
-
-  Future<UserModel> getUserByUid({ required String uid }) async {
-
+  Future<UserModel> getUserByUid({required String uid}) async {
     UserModel userTemp;
 
     var user = await userRef.doc(uid).snapshots().first;
@@ -61,93 +57,108 @@ class FirebaseManager {
     return getUserByUid(uid: auth.currentUser!.uid);
   }
 
-
-
-  createAccountUser (
-      {
-        required GlobalKey<ScaffoldState> scaffoldKey,
-        required String imagePath,
-        required String name,
-        required String phone,
-        required String email,
-        required String city,
-        required String password,
-        required UserType userType,
-      }) async {
-
+  createAccountUser({
+    required GlobalKey<ScaffoldState> scaffoldKey,
+    required String imagePath,
+    required String name,
+    required String phone,
+    required String email,
+    required String city,
+    required String password,
+    required UserType userType,
+  }) async {
     showLoaderDialog(scaffoldKey.currentContext);
 
     if (!email.isValidEmail()) {
-      scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("please enter a valid email"), isError: true);
+      scaffoldKey.showTosta(
+          message: AppLocalization.of(scaffoldKey.currentContext!)!
+              .trans("please enter a valid email"),
+          isError: true);
       showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
       return;
     }
 
-    var userId = await _createAccountInFirebase(scaffoldKey: scaffoldKey, email: email, password: password);
+    var userId = await _createAccountInFirebase(
+        scaffoldKey: scaffoldKey, email: email, password: password);
 
     String imgUrl = "";
 
+    if (imagePath != null && imagePath != "") {
+ //     await _uploadImage(folderName: "user", imagePath: imagePath);
+    }
+
+    List<UserModel> users = await getAllUsers().first;
 
     if (userId != null) {
       userRef.doc(userId).set({
-        "id": "${Random().nextInt(99999)}",
+        "id": "${users.length}${Random().nextInt(999)}",
         "image": imgUrl,
         "name": name,
         "phone": phone,
         "email": email,
         "city": city,
-        "balance": 0,
         "status-account": 1,
         "type-user": userType.index,
         "uid": userId,
-      })
-          .then((value) async {
-
+      }).then((value) async {
         showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-        addNotifications(uidUser: userId, titleEN: "Welcome", titleAR: "مرحبا بك", detailsEN: "Welcome to our app\nWe wish you a happy experience", detailsAR: "مرحبا بك في تطبيقنا\nنتمنى لك تجربة رائعة");
+        addNotifications(
+            uidUser: userId,
+            titleEN: "Welcome",
+            titleAR: "مرحبا بك",
+            detailsEN: "Welcome to our app\nWe wish you a happy experience",
+            detailsAR: "مرحبا بك في تطبيقنا\nنتمنى لك تجربة رائعة");
 
         await getAllUsers().first.then((users) {
-
           for (var user in users) {
             if (user.userType == UserType.ADMIN) {
-              addNotifications(uidUser: user.uid, titleEN: "New User", titleAR: "مستخدم جديد", detailsEN: "$name new created a new account", detailsAR: "$name أنشأ حساب جديد ");
+              addNotifications(
+                  uidUser: user.uid,
+                  titleEN: "New User",
+                  titleAR: "مستخدم جديد",
+                  detailsEN: "$name new created a new account",
+                  detailsAR: "$name أنشأ حساب جديد ");
             }
           }
-
         });
 
-        Navigator.of(scaffoldKey.currentContext!).pushNamedAndRemoveUntil("/SignIn", (route) => false, arguments: "Account created successfully, Your account in now under review");
-
-      })
-          .catchError((err) {
+        Navigator.of(scaffoldKey.currentContext!).pushNamedAndRemoveUntil(
+            "/SignIn", (route) => false,
+            arguments:
+            "Account created successfully, Your account in now under review");
+      }).catchError((err) {
         showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-        scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Something went wrong"), isError: true);
+        scaffoldKey.showTosta(
+            message: AppLocalization.of(scaffoldKey.currentContext!)!
+                .trans("Something went wrong"),
+            isError: true);
       });
     } else {
       showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
     }
-
   }
 
   changeStatusAccount({
     required GlobalKey<ScaffoldState> scaffoldKey,
     required String userId,
     required Status status,
-  } ) {
+  }) {
     showLoaderDialog(scaffoldKey.currentContext);
 
     userRef.doc(userId).update({
       "status-account": status.index,
-    })
-        .then((value) async {
+    }).then((value) async {
       showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-      scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("done successfully"));
-    })
-        .catchError((err) {
+      scaffoldKey.showTosta(
+          message: AppLocalization.of(scaffoldKey.currentContext!)!
+              .trans("Done Successfully"));
+    }).catchError((err) {
       showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-      scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Something went wrong"), isError: true);
+      scaffoldKey.showTosta(
+          message: AppLocalization.of(scaffoldKey.currentContext!)!
+              .trans("Something went wrong"),
+          isError: true);
     });
-
   }
 
   updateAccount({
@@ -156,7 +167,7 @@ class FirebaseManager {
     required String name,
     required String city,
     required String phoneNumber,
-  } ) async {
+  }) async {
     showLoaderDialog(scaffoldKey.currentContext);
 
     String imageURL = "";
@@ -165,10 +176,9 @@ class FirebaseManager {
       if (image.isURL()) {
         imageURL = image;
       } else {
-        //     imageURL = await _uploadImage(folderName: "user", imagePath: image);
+//        imageURL = await _uploadImage(folderName: "user", imagePath: image);
       }
     }
-
 
 
     userRef.doc(auth.currentUser!.uid).update({
@@ -176,29 +186,29 @@ class FirebaseManager {
       "name": name,
       "phone": phoneNumber,
       "city": city,
-    })
-        .then((value) async {
+    }).then((value) async {
       showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-      UserModel? user = (await UserProfile.shared.getUser());
+      UserModel? user = await UserProfile.shared.getUser();
       user!.image = imageURL;
       user.name = name;
       user.city = city;
       user.phone = phoneNumber;
       UserProfile.shared.setUser(user: user);
       Navigator.of(scaffoldKey.currentContext!).pop();
-    })
-        .catchError((err) {
+    }).catchError((err) {
       showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-      scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Something went wrong"), isError: true);
+      scaffoldKey.showTosta(
+          message: AppLocalization.of(scaffoldKey.currentContext!)!
+              .trans("Something went wrong"),
+          isError: true);
     });
-
   }
 
   changePassword({
     required GlobalKey<ScaffoldState> scaffoldKey,
     required String newPassword,
     required String confirmPassword,
-  } ) async {
+  }) async {
     showLoaderDialog(scaffoldKey.currentContext);
 
     auth.currentUser!.updatePassword(newPassword).then((value) {
@@ -206,10 +216,97 @@ class FirebaseManager {
       Navigator.of(scaffoldKey.currentContext!).pop();
     }).catchError((err) {
       showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-      scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Something went wrong"), isError: true);
+      scaffoldKey.showTosta(
+          message: AppLocalization.of(scaffoldKey.currentContext!)!
+              .trans("Something went wrong"),
+          isError: true);
     });
-
   }
+
+  login(
+      {required GlobalKey<ScaffoldState> scaffoldKey,
+        required String email,
+        required String password}) async {
+    showLoaderDialog(scaffoldKey.currentContext);
+
+    try {
+      await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+
+      await getUserByUid(uid: auth.currentUser!.uid).then((UserModel user) {
+        switch (user.accountStatus) {
+          case Status.ACTIVE:
+            showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
+            UserProfile.shared.setUser(user: user);
+            Navigator.of(scaffoldKey.currentContext!).pushNamedAndRemoveUntil(
+                '/TabBarPage', (Route<dynamic> route) => false,
+                arguments: user.userType);
+            break;
+          case Status.PENDING:
+            showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
+            scaffoldKey.showTosta(
+                message: AppLocalization.of(scaffoldKey.currentContext!)!
+                    .trans("Account under review"),
+                isError: true);
+            auth.signOut();
+            break;
+          case Status.Rejected:
+            showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
+            scaffoldKey.showTosta(
+                message: AppLocalization.of(scaffoldKey.currentContext!)!
+                    .trans("Your account has been denied"),
+                isError: true);
+            auth.signOut();
+            break;
+          case Status.Deleted:
+            showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
+            scaffoldKey.showTosta(
+                message: AppLocalization.of(scaffoldKey.currentContext!)!
+                    .trans("Your account has been deleted"),
+                isError: true);
+            auth.signOut();
+            break;
+          case Status.Disable:
+            showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
+            scaffoldKey.showTosta(
+                message: AppLocalization.of(scaffoldKey.currentContext!)!
+                    .trans("Your account has been disabled"),
+                isError: true);
+            auth.signOut();
+            break;
+          case Status.Finished:
+            // TODO: Handle this case.
+            break;
+          case Status.canceled:
+            // TODO: Handle this case.
+            break;
+        }
+      });
+
+      return;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        scaffoldKey.showTosta(
+            message: AppLocalization.of(scaffoldKey.currentContext!)!
+                .trans("user not found"),
+            isError: true);
+      } else if (e.code == 'wrong-password') {
+        scaffoldKey.showTosta(
+            message: AppLocalization.of(scaffoldKey.currentContext!)!
+                .trans("wrong password"),
+            isError: true);
+      } else if (e.code == 'too-many-requests') {
+        scaffoldKey.showTosta(
+            message: AppLocalization.of(scaffoldKey.currentContext!)!
+                .trans("The account is temporarily locked"),
+            isError: true);
+      }
+    }
+
+    showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
+    return;
+  }
+
   Future<String?> _createAccountInFirebase(
       {required GlobalKey<ScaffoldState> scaffoldKey,
         required String email,
@@ -232,76 +329,12 @@ class FirebaseManager {
     } catch (e) {
       scaffoldKey.showTosta(
           message: AppLocalization.of(scaffoldKey.currentContext!)!
-              .trans("something went wrong"),
+              .trans("Something went wrong"),
           isError: true);
       print(e);
       return null;
     }
   }
-  // TODO:- End User
-  login({ required GlobalKey<ScaffoldState> scaffoldKey, required String email, required String password }) async {
-
-    try {
-
-      try {
-        //      await FirebaseFirestore.instance.terminate();
-        await FirebaseFirestore.instance.clearPersistence();
-      } catch (e) {
-      }
-      showLoaderDialog(scaffoldKey.currentContext);
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: email,
-          password: password
-      );
-
-      await getUserByUid(uid: auth.currentUser!.uid).then((UserModel user) {
-        switch (user.accountStatus) {
-          case Status.ACTIVE:
-            showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-            UserProfile.shared.setUser(user: user);
-            Navigator.of(scaffoldKey.currentContext!).pushNamedAndRemoveUntil('/TabBarPage', (Route<dynamic> route) => false, arguments: user.userType);
-            break;
-          case Status.PENDING:
-            showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-            scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Account under review"), isError: true);
-            auth.signOut();
-            break;
-          case Status.Rejected:
-            showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-            scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Your account has been denied"), isError: true);
-            auth.signOut();
-            break;
-          case Status.Deleted:
-            showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-            scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Your account has been deleted"), isError: true);
-            auth.signOut();
-            break;
-          case Status.Disable:
-            showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-            scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Your account has been disabled"), isError: true);
-            auth.signOut();
-        }
-
-      });
-
-      return;
-    } on FirebaseAuthException catch (e) {
-
-      if (e.code == 'user-not-found') {
-        scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("user not found"), isError: true);
-      } else if (e.code == 'wrong-password') {
-        scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("wrong password"), isError: true);
-      } else if (e.code == 'too-many-requests') {
-        scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("The account is temporarily locked"), isError: true);
-      } else {
-        scaffoldKey.showTosta(message: AppLocalization.of(scaffoldKey.currentContext!)!.trans("Something went wrong"), isError: true);
-      }
-    }
-
-    showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
-    return;
-  }
-
 
   signOut(context) async {
     try {
@@ -337,6 +370,21 @@ class FirebaseManager {
       }
     }
   }
+
+  deleteAccount(context, { required String iduser }) async {
+
+    showLoaderDialog(context);
+
+    await userRef.doc(iduser).delete().then((_) => {
+
+    }).catchError((e) {
+
+    });
+
+    showLoaderDialog(context, isShowLoader: false);
+
+  }
+  // TODO:- End User
 
 // TODO:- Start Notifications
 
@@ -388,4 +436,13 @@ class FirebaseManager {
   }
 
 // TODO:- End Notifications
+
+//  Future<String> _uploadImage(
+//       {required String folderName, required String imagePath}) async {
+//     UploadTask uploadTask = storageRef
+//         .child('$folderName/${const Uuid().v4()}')
+//         .putFile(File(imagePath));
+//     String url = await (await uploadTask).ref.getDownloadURL();
+//     return url;
+//   }
 }

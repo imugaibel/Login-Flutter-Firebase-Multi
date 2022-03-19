@@ -6,6 +6,8 @@ import 'package:login/assets.dart';
 
 import 'package:login/M.S.dart';
 import '../main.dart';
+import '../lang.dart';
+
 import 'package:login/user_profile.dart';
 
 class Splash extends StatefulWidget {
@@ -49,9 +51,9 @@ class _SplashState extends State<Splash> {
   }
 
   _wrapper() async {
-    //   await UserProfile.shared.getLanguage().then((lang) {
-    //     MyApp.setLocale(context, Locale(lang == Language.ARABIC ? "ar" : "en"));
-    //   });
+       await UserProfile.shared.getLanguage().then((lang) {
+         MyApp.setLocale(context, Locale(lang == Language.ARABIC ? "ar" : "en"));
+       });
 
     UserModel? user = await UserProfile.shared.getUser();
 

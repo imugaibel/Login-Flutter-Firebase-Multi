@@ -7,7 +7,7 @@ import 'package:login/M.S.dart';
 import 'package:login/input_style.dart';
 import 'package:login/user-type.dart';
 
-import '../main.dart';
+import '../lang.dart';
 
 class Signup extends StatefulWidget {
   const Signup({Key? key}) : super(key: key);

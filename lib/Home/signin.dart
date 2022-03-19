@@ -5,11 +5,11 @@ import 'package:login/assets.dart';
 import 'package:login/input_style.dart';
 import 'package:login/extensions.dart';
 
-import '../firebase-manager.dart';
-import '../main.dart';
+import '../M.S.dart';
+import '../lang.dart';
 
 class SignIn extends StatefulWidget {
-  final Object? message;
+  final Object?  message;
 
   const SignIn({Key? key, this.message}) : super(key: key);
 
@@ -25,7 +25,6 @@ class _SignInState extends State<SignIn> {
   bool isShowPassword = false;
 
   @override
-  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -34,25 +33,27 @@ class _SignInState extends State<SignIn> {
         showDialog<String>(
           context: context,
           builder: (BuildContext context) => AlertDialog(
-            title:
-                Text(AppLocalization.of(context)!.trans("Done Successfully")),
-            content: Text(AppLocalization.of(context)!.trans(
-                "Account created successfully, Your account in now under review")),
+            title:  Text(AppLocalization.of(context)!.trans("Done Successfully")),
+            content:  Text(AppLocalization.of(context)!.trans("Account created successfully, Your account in now under review")),
             actions: <Widget>[
               TextButton(
-                onPressed: () => Navigator.pop(context, 'Cancel'),
-                child: Text(AppLocalization.of(context)!.trans("Cancel")),
-              ),
-              TextButton(
+                style: TextButton.styleFrom(
+                  primary: Theme.of(context).primaryColor,
+                ),
                 onPressed: () => Navigator.pop(context, 'OK'),
-                child: Text(AppLocalization.of(context)!.trans("OK")),
+                child:  Text(
+                  AppLocalization.of(context)!.trans("Close"),
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
             ],
           ),
         );
       });
     }
+
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +183,6 @@ class _SignInState extends State<SignIn> {
                                           color: Theme.of(context).canvasColor,
                                         )),
                                     onPressed: _btnSignin),
-
                               ],
                             ),
                             Column(
@@ -227,7 +227,7 @@ class _SignInState extends State<SignIn> {
       return;
     }
 
-    FlutterFirebase.shared
+    FirebaseManager.shared
         .login(scaffoldKey: _scaffoldKey, email: email, password: password);
   }
 }

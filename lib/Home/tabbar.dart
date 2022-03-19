@@ -4,14 +4,14 @@ import 'package:login/Home/profile.dart';
 import 'package:login/user-type.dart';
 
 
-import '../../main.dart';
+import '../lang.dart';
 import '../admin page/admin.dart';
+import '../admin page/userss.dart';
 import '../notifications.dart';
 import '../user page/clientsreport.dart';
 
 
 class TabBarItem {
-
   final IconData icon;
   final String label;
   final Widget page;
@@ -46,9 +46,8 @@ class _TabBarPageState extends State<TabBarPage> {
     switch (widget.userType) {
       case UserType.ADMIN:
         tabItems = [];
-        tabItems.add(TabBarItem(Icons.home, "Home",  Notifications()));
-        tabItems.add(TabBarItem(Icons.sticky_note_2_sharp, "M.S",  Alluser()));
-        tabItems.add(TabBarItem(Icons.supervised_user_circle_sharp, "M.S",  Alluser()));
+        tabItems.add(TabBarItem(Icons.home, "Home",  Alluser()));
+        tabItems.add(TabBarItem(Icons.supervised_user_circle_sharp, "Users",  Users()));
         tabItems.add(TabBarItem(Icons.person, "Profile",  Profile()));
 
         break;
