@@ -44,7 +44,7 @@ class _SplashState extends State<Splash> {
           AppLocalization.of(context)!.trans("M.S"),
           textAlign: TextAlign.center,
           style: TextStyle(
-              color: Theme.of(context).colorScheme.secondary, fontSize: 18),
+              color: Theme.of(context).primaryColor, fontSize: 18),
         ),
       ),
     );

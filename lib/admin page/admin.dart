@@ -22,7 +22,7 @@ class _AlluserState extends State<Alluser> {
           color: Theme.of(context).primaryColor,
         ),
         title: Text(AppLocalization.of(context)!.trans("M.S"), style: TextStyle(color: Theme.of(context).primaryColor),),
-        centerTitle: true,
+        centerTitle: false,
         actions: const [
           NotificationsWidget(),
         ],

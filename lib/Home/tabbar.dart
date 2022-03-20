@@ -6,7 +6,7 @@ import 'package:login/user-type.dart';
 
 import '../lang.dart';
 import '../admin page/admin.dart';
-import '../admin page/userss.dart';
+import '../admin page/UserS.dart';
 import '../notifications.dart';
 import '../user page/clientsreport.dart';
 
@@ -48,14 +48,14 @@ class _TabBarPageState extends State<TabBarPage> {
         tabItems = [];
         tabItems.add(TabBarItem(Icons.home, "Home",  Alluser()));
         tabItems.add(TabBarItem(Icons.supervised_user_circle_sharp, "Users",  Users()));
-        tabItems.add(TabBarItem(Icons.person, "Profile",  Profile()));
+        tabItems.add(TabBarItem(Icons.person, "Profile",  const Profile()));
 
         break;
       case UserType.USER:
         tabItems = [];
-        tabItems.add(TabBarItem(Icons.home, "Home",  Notifications()));
-        tabItems.add(TabBarItem(Icons.sticky_note_2_sharp, "M.S",  uservendor()));
-        tabItems.add(TabBarItem(Icons.person, "Profile",  Profile()));
+        tabItems.add(TabBarItem(Icons.home, "Home",  const Notifications()));
+        tabItems.add(TabBarItem(Icons.sticky_note_2_sharp, "M.S",  const uservendor()));
+        tabItems.add(TabBarItem(Icons.person, "Profile",  const Profile()));
     }
   }
 
@@ -117,7 +117,7 @@ class _TabBarPageState extends State<TabBarPage> {
     List<BottomNavigationBarItem> items = [];
 
     for (var i = 0; i < tabItems.length; i++) {
-      BottomNavigationBarItem obj = BottomNavigationBarItem(icon: Icon(tabItems[i].icon, color: indexTap == i ? Theme.of(context).primaryColor : Colors.black26,), label: AppLocalization.of(context)!.trans(tabItems[i].label));
+      BottomNavigationBarItem obj = BottomNavigationBarItem(icon: Icon(tabItems[i].icon, color: indexTap == i ? Theme.of(context).primaryColor : Theme.of(context).primaryColorDark,), label: AppLocalization.of(context)!.trans(tabItems[i].label));
       items.add(obj);
     }
 

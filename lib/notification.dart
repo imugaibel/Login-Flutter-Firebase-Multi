@@ -30,7 +30,7 @@ class NotificationsWidget extends StatelessWidget {
               child: Stack(
                 children: [
                   IconButton(
-                      icon: const Icon(Icons.notifications, color: Colors.blue,),
+                      icon:  Icon(Icons.notifications, color: Theme.of(context).primaryColor,),
                       tooltip: AppLocalization.of(context)!.trans(
                           "Notifications"),
                       onPressed: () =>
@@ -41,8 +41,8 @@ class NotificationsWidget extends StatelessWidget {
                         top: -3,
                         child: Container(
                           padding: const EdgeInsets.all(5),
-                          decoration: const BoxDecoration(
-                            color: Colors.red,
+                          decoration:  BoxDecoration(
+                            color: Theme.of(context).bottomAppBarColor,
                             shape: BoxShape.circle,
                           ),
                           child: Text(items.length.toString(), style: const TextStyle(fontSize: 12),),

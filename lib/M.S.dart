@@ -98,6 +98,7 @@ class FirebaseManager {
         "email": email,
         "city": city,
         "status-account": 1,
+        "createdDate": DateTime.now().toString(),
         "type-user": userType.index,
         "uid": userId,
       }).then((value) async {
@@ -149,6 +150,18 @@ class FirebaseManager {
       "status-account": status.index,
     }).then((value) async {
       showLoaderDialog(scaffoldKey.currentContext, isShowLoader: false);
+      //      await getAllUsers().first.then((users) {
+      //         for (var user in users) {
+      //           if (user.userType == UserType.ADMIN) {
+      //             addNotifications(
+      //                 uidUser: user.uid,
+      //                 titleEN: "$userId Done",
+      //                 titleAR: "$userId Done",
+      //                 detailsEN: "$status Done",
+      //                 detailsAR: "$status Done");
+      //           }
+      //         }
+      //       });
       scaffoldKey.showTosta(
           message: AppLocalization.of(scaffoldKey.currentContext!)!
               .trans("Done Successfully"));
@@ -232,7 +245,6 @@ class FirebaseManager {
     try {
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-
       await getUserByUid(uid: auth.currentUser!.uid).then((UserModel user) {
         switch (user.accountStatus) {
           case Status.ACTIVE:
@@ -273,12 +285,6 @@ class FirebaseManager {
                     .trans("Your account has been disabled"),
                 isError: true);
             auth.signOut();
-            break;
-          case Status.Finished:
-            // TODO: Handle this case.
-            break;
-          case Status.canceled:
-            // TODO: Handle this case.
             break;
         }
       });

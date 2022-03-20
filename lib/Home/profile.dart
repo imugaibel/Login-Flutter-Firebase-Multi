@@ -41,8 +41,8 @@ class _ProfileState extends State<Profile> {
           color: Theme.of(context).primaryColor,
         ),
         title: Text(AppLocalization.of(context)!.trans("Profile"), style: TextStyle(color: Theme.of(context).primaryColor),),
-        centerTitle: true,
-        actions: [
+        centerTitle: false,
+        actions: const [
           NotificationsWidget(),
         ],
       ),
@@ -156,7 +156,7 @@ class _ProfileState extends State<Profile> {
     }
 
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
+      margin: const EdgeInsets.symmetric(vertical: 10),
       child: InkWell(
         onTap: () async {
           if (item == ProfileList.CHANGE_LANGUAGE) {
@@ -196,7 +196,7 @@ class _ProfileState extends State<Profile> {
                   AppLocalization.of(context)!.trans(title),
                   style: TextStyle(
                       color:
-                      isLast ? Colors.red : Theme.of(context).primaryColor,
+                      isLast ? Theme.of(context).bottomAppBarColor : Theme.of(context).primaryColor,
                       fontSize: 18,
                       fontWeight: FontWeight.w500),
                 ),
@@ -207,7 +207,7 @@ class _ProfileState extends State<Profile> {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Container(
@@ -225,37 +225,35 @@ class _ProfileState extends State<Profile> {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
-          return Container(
-            child: Wrap(
-              children: <Widget>[
-                ListTile(
-                  leading: Container(
-                    width: 35,
-                    height: 35,
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    //              child: SvgPicture.asset(Assets.shared.icEnglish),
+          return Wrap(
+            children: <Widget>[
+              ListTile(
+                leading: Container(
+                  width: 35,
+                  height: 35,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
                   ),
-                  title: Text('English'),
-                  onTap: () => _changeLanguage(context, lang: Language.ENGLISH),
+                  //              child: SvgPicture.asset(Assets.shared.icEnglish),
                 ),
-                ListTile(
-                  leading: Container(
-                    width: 35,
-                    height: 35,
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    //               child: SvgPicture.asset(Assets.shared.icArabic),
+                title: const Text('English'),
+                onTap: () => _changeLanguage(context, lang: Language.ENGLISH),
+              ),
+              ListTile(
+                leading: Container(
+                  width: 35,
+                  height: 35,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
                   ),
-                  title: Text('عربي'),
-                  onTap: () => _changeLanguage(context, lang: Language.ARABIC),
+                  //               child: SvgPicture.asset(Assets.shared.icArabic),
                 ),
-              ],
-            ),
+                title: const Text('عربي'),
+                onTap: () => _changeLanguage(context, lang: Language.ARABIC),
+              ),
+            ],
           );
         });
   }

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:login/assets.dart';
@@ -43,7 +42,7 @@ class _SignInState extends State<SignIn> {
                 onPressed: () => Navigator.pop(context, 'OK'),
                 child:  Text(
                   AppLocalization.of(context)!.trans("Close"),
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
             ],

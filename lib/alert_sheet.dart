@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../main.dart';
 import 'lang.dart';
 
 alertSheet(context, { String title = "", required List<String> items, required onTap(value) }) {
@@ -24,7 +23,7 @@ alertSheet(context, { String title = "", required List<String> items, required o
         ),
       ),
     );
-  };
+  }
   }
 
   actions.add(Align(

@@ -82,7 +82,7 @@ class _NotificationState extends State<Notifications> {
         const SizedBox(height: 10),
         Text(lang == Language.ARABIC ? item.titleAr : item.titleEn, style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 18, fontWeight: FontWeight.w600),),
         const SizedBox(height: 5),
-        Text(lang == Language.ARABIC ? item.detailsAr : item.detailsEn, style: const TextStyle(color: Colors.black54, fontSize: 16),),
+        Text(lang == Language.ARABIC ? item.detailsAr : item.detailsEn, style:  TextStyle(color: Theme.of(context).primaryColorDark, fontSize: 16),),
         const SizedBox(height: 10),
         Container(height: 1, color: Theme.of(context).primaryColor,),
         const SizedBox(height: 10),

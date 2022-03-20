@@ -12,14 +12,34 @@ import '../user-type.dart';
 import '../user_profile.dart';
 
 class Users extends StatefulWidget {
-  _UsersState createState() => _UsersState();
   bool searchMode = false;
-  Users( );
+  Users({Key? key}) : super(key: key);
+
+  @override
+  _UsersState createState() => _UsersState();
 }
 
 class _UsersState extends State<Users> {
   Language lang = Language.ENGLISH;
   final TextEditingController? searchTextField = TextEditingController();
+   Widget? appBarTitle;
+
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    UserProfile.shared.getLanguage().then((value) {
+      if (value != lang) {
+        setState(() {
+          appBarTitle = Text(
+          AppLocalization.of(context)!.trans("Users"),
+          style: TextStyle(color: Theme.of(context).primaryColor),
+        );
+        lang = lang;
+      });
+    }
+  });
+}
+
 
   @override
   void dispose() {
@@ -27,18 +47,16 @@ class _UsersState extends State<Users> {
     searchTextField!.dispose();
     super.dispose();
   }
-  Widget appBarTitle = Text(("M.S"),
-      style: TextStyle( color: Colors.black));
+
   Icon actionIcon = const Icon(Icons.search);
 
   Status status = Status.PENDING;
   UserType userType = UserType.USER;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
@@ -48,12 +66,11 @@ class _UsersState extends State<Users> {
             color: Theme.of(context).primaryColor,
           ),
           title: appBarTitle,
-          centerTitle: true,
+          centerTitle: false,
           actions: [
             IconButton(
               icon: actionIcon,
-            tooltip: AppLocalization.of(context)!.trans(
-                "Notifications"),
+              tooltip: AppLocalization.of(context)!.trans("Search"),
               onPressed: () {
                 setState(() {
                   if (actionIcon.icon == Icons.search) {
@@ -69,13 +86,15 @@ class _UsersState extends State<Users> {
                             TextPosition(offset: searchTextField!.text.length));
                         setState(() {});
                       },
-                      style: const TextStyle(
-                        color: Colors.blue,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
-                      decoration: const InputDecoration(
-                          prefixIcon: Icon(Icons.search, color: Colors.blue),
-                          hintText: "Search...",
-                          hintStyle: TextStyle(color: Colors.blue)),
+                      textAlign: TextAlign.center,
+                      decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.search,
+                              color: Theme.of(context).primaryColor),
+                          hintText: AppLocalization.of(context)!
+                              .trans("Search")),
                     );
                   } else {
                     actionIcon = const Icon(Icons.search);

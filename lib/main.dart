@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
@@ -80,6 +79,8 @@ class _MyAppState extends State<MyApp> {
           theme: ThemeData(
             scaffoldBackgroundColor: Colors.white,
             canvasColor: Colors.white,
+            primaryColorDark: Colors.black26,
+            bottomAppBarColor: Colors.red,
             primaryColor: Colors.blue,
             backgroundColor: Colors.white,
             platform: TargetPlatform.android,
@@ -100,7 +101,7 @@ class _MyAppState extends State<MyApp> {
                           message: arguments,
                         ));
               case '/SignUp':
-                return MaterialPageRoute(builder: (_) => Signup());
+                return MaterialPageRoute(builder: (_) => const Signup());
               case '/ForgotPassword':
                 return MaterialPageRoute(builder: (_) => ForgotPassword());
               case '/TabBarPage':

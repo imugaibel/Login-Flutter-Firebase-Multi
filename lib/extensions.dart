@@ -28,7 +28,7 @@ extension StringExtensions on String {
 
 extension TextEditingControllerExtensions on TextEditingController {
 
-  isEmptyValue() => text.trim().isNotEmpty && text.trim() != null && text.trim() != '';
+  isEmptyValue() => text.trim().isNotEmpty && text.trim() != '';
 
 }
 
