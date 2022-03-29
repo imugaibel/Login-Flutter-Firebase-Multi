@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
@@ -7,23 +8,23 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'Home/edit-password.dart';
 import 'Home/edit-profile.dart';
 import 'Home/forgot_password.dart';
+import 'firebase_options.dart';
+import 'io_init.dart';
 import 'lang.dart';
 import 'notifications.dart';
 import 'Home/signin.dart';
 import 'Home/signup.dart';
 import 'Home/splash.dart';
 import 'Home/tabbar.dart';
-import '/init.dart'
-    if (dart.library.html) 'web_init.dart'
-    if (dart.library.io) 'io_init.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeFirebase();
-  await Firebase.initializeApp().then((_) {
-    FirebaseFirestore.instance.settings =
-        const Settings(persistenceEnabled: false);
-  });
+  if (kIsOnMobile || kIsWeb) {
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform).then((_) {
+      FirebaseFirestore.instance.settings =
+      const Settings(persistenceEnabled: false);
+    });}
   runApp(const MyApp());
 }
 
